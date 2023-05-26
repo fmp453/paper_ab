@@ -1,16 +1,19 @@
 # paper_ab
 
-A new Flutter project.
+URLまたは論文IDで検索してabstractやタイトルを表示する。
+
+ローカルのcsvファイルに登録することもできる
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+バックエンドには`Flask`を用いているのでインストールが必要
+```bash
+pip install Flask
+```
 
-A few resources to get you started if this is your first Flutter project:
+csv管理は`pandas`なのでそれもインストールが必要
+```bash
+pip install pandas
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+※後に`requirements.txt`を追加予定
