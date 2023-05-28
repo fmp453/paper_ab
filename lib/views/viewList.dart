@@ -94,10 +94,6 @@ class ViewListTabState extends State<ViewListTab>{
   @override
   void initState() {
     fetchPaperInfo();
-    // List<Map<String, dynamic>> tmp = [];
-    // fetchPaperInfo(tmp);
-    // paperInfoList = List<Map<String, dynamic>>.from(tmp);
-    // debugPrint(tmp.toString());
     super.initState();
   }
 
