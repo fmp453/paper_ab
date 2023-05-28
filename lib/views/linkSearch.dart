@@ -34,18 +34,6 @@ class LinkSearchTabState extends State<LinkSearchTab>{
   String titleText = "";
   String paperID = "";
 
-  Future<http.Response> addInfo(String id, String title, String abstract) async {
-    var uri = Uri.parse("http://127.0.0.1:5000/add_info");
-    String body = json.encode({
-      "id": id,
-      "title": title,
-      "abstract": abstract
-    });
-    
-    http.Response response = await http.post(uri, body: body, headers: {'Content-Type': 'application/json'});
-    return response;
-  }
-
   void displayPaperInfo(Map<String, dynamic> paperInfo){
     showDivider = true;
     paperID = paperInfo["id"];
