@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:paper_ab/componets/viewList_api.dart';
 
 
 class ViewListTab extends StatefulWidget{
@@ -16,20 +17,9 @@ class ViewListTabState extends State<ViewListTab>{
   List<Map<String, dynamic>> paperInfoList = [];
 
   Future<void> fetchPaperInfo() async {
-    // change the uri
-    var uri = Uri.parse("http://127.0.0.1:5000/paper_info");
-    http.Response response = await http.get(uri);
-    var resJson = response.body;
-    String tmp = json.decode(resJson);
-    List<String> l = tmp.split("}");
-    int n = l.length;
-    for(int i = 0; i < n - 1; i++){
-      l[i] = "${l[i]}}";
-      l[i] = l[i].substring(1);
-      l[i] = l[i].replaceAll(r"\n", " ");
-    }
+    List<String> l = await getPaperInfos();
     setState(() {
-      for(int i = 0; i < n - 1; i++){
+      for(int i = 0; i < l.length - 1; i++){
         paperInfoList.add(json.decode(l[i]));
       }
     });
@@ -104,6 +94,10 @@ class ViewListTabState extends State<ViewListTab>{
   @override
   void initState() {
     fetchPaperInfo();
+    // List<Map<String, dynamic>> tmp = [];
+    // fetchPaperInfo(tmp);
+    // paperInfoList = List<Map<String, dynamic>>.from(tmp);
+    // debugPrint(tmp.toString());
     super.initState();
   }
 
