@@ -6,14 +6,17 @@ URLまたは論文IDで検索してabstractやタイトルを表示する。
 
 ## Getting Started
 
-バックエンドには`Flask`を用いているのでインストールが必要
+バックエンドには`Flask`および`pandas`を用いているのでインストールが必要
 ```bash
-pip install Flask
+cd api
+pip install -r requirements.txt
 ```
 
-csv管理は`pandas`なのでそれもインストールが必要
+`api`ディレクトリで実行
 ```bash
-pip install pandas
+python app.py
 ```
-
-※後に`requirements.txt`を追加予定
+または
+```bash
+nohup python app.py &
+```
