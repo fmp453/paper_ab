@@ -11,7 +11,11 @@ URLまたは論文IDで検索してabstractやタイトルを表示する。
 cd api
 pip install -r requirements.txt
 ```
-
+データベース用csvファイル生成 (`paper_ab`で実行)
+```bash
+cd database
+python make_csv.py
+```
 `api`ディレクトリで実行
 ```bash
 python app.py
