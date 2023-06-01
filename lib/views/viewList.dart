@@ -33,6 +33,9 @@ class ViewListTabState extends State<ViewListTab>{
     }
   }
 
+  // 表の各行をクリックしたときに出てくるダイアログを管理する関数
+  // title, abstractとその論文ページをブラウザで開くボタンに翻訳ボタンと閉じるボタン
+  // 翻訳部分については未実装
   void _showDetails(BuildContext context, String title, String abstract, String id) {
     showDialog(
       context: context,
