@@ -5,10 +5,6 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return "hello world"
-
 @app.route('/api', methods=['GET', 'POST'])
 def data_with_url():
     data = request.json
@@ -71,6 +67,9 @@ def add_paper_to_csv(id, title, abstract):
     csv_path = "../database/paper_info.csv"
     df = pd.read_csv(csv_path, dtype={'id': 'str'})
 
+    if id == '' or title == 'URLまたはIDが間違っています' or abstract == '':
+        return "IDまたはURLが間違っている可能性があります"
+
     if id in set(df["id"].values):
         return "Already added in the list"
     
@@ -79,6 +78,8 @@ def add_paper_to_csv(id, title, abstract):
         'title': title,
         'abstract': abstract
     }
+
+    
     new_row = pd.DataFrame([new_paper_info])
     df = pd.concat([df, new_row], ignore_index=True)
     df.to_csv(csv_path, index=False)
