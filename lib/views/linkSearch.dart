@@ -29,17 +29,19 @@ class LinkSearchTabState extends State<LinkSearchTab>{
   Color appBarBackgroundColor = Colors.redAccent;
 
   bool showDivider = false;
+  String abstractChapter = "";
   String abstractString = "";
-  String outputText = "";
   String titleText = "";
   String paperID = "";
+  static const String worngMessage = "URLまたはIDが間違っています";
+  static const String textFieldHintText = "ID or URL (ex. https://arxiv.org/abs/1706.03762 or 1706.03762)";
 
   void displayPaperInfo(Map<String, dynamic> paperInfo){
     showDivider = true;
     paperID = paperInfo["id"];
     titleText = paperInfo["title"];
-    abstractString = "Abstract";
-    outputText = paperInfo["abstract"];
+    abstractChapter = "Abstract";
+    abstractString = paperInfo["abstract"];
   }
   
   @override
@@ -57,7 +59,7 @@ class LinkSearchTabState extends State<LinkSearchTab>{
                   controller: _userPaperLinkField,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: "ID or URL (ex. https://arxiv.org/abs/1706.03762 or 1706.03762)"
+                    hintText: textFieldHintText
                   ),
                 ),
               ),
@@ -77,7 +79,7 @@ class LinkSearchTabState extends State<LinkSearchTab>{
                     Map<String, dynamic> paperInfo = json.decode(resJson);
                     if(paperInfo["id"] == "url not match"){
                       setState(() {
-                        titleText = "URLまたはIDが間違っています";
+                        titleText = worngMessage;
                       });
                       return ;
                     } else{
@@ -88,7 +90,7 @@ class LinkSearchTabState extends State<LinkSearchTab>{
                   }
                   catch(e){
                     setState(() {
-                      titleText = "URL or ID not match";
+                      titleText = worngMessage;
                     });
                   }
                 },
@@ -103,7 +105,7 @@ class LinkSearchTabState extends State<LinkSearchTab>{
               height: 50,
               child: ElevatedButton(
                 onPressed: () async{
-                  var resJson = await addInfo(paperID, titleText, outputText);
+                  var resJson = await addInfo(paperID, titleText, abstractString);
                   Map<String, dynamic> statusMessage = json.decode(resJson.body);
                   // timerで時間管理する。ここでは0.8秒でポップアップが消えるようにしている
                   Timer _timer = Timer(
@@ -154,13 +156,13 @@ class LinkSearchTabState extends State<LinkSearchTab>{
         Row(
           children: [
             const SizedBox(width: 15,),
-            Text(abstractString, style: const TextStyle(fontSize: 15),),
+            Text(abstractChapter, style: const TextStyle(fontSize: 15),),
           ],
         ),
         Expanded(
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: Text(outputText)
+            child: Text(abstractString)
           )
         )
       ],
