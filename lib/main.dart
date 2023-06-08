@@ -45,9 +45,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           appBarBackgroundColor = Colors.redAccent;
           break;
         case 1:
-        //   appBarBackgroundColor = Colors.orangeAccent;
-        //   break;
-        // case 2:
           appBarBackgroundColor = Colors.blueAccent;
           break;
        } 
@@ -65,7 +62,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           controller: tabController,
           tabs: const [
             Tab(text: 'リンクまたはIDで探す'),
-            // Tab(text: 'タイトルで探す'),
             Tab(text: '登録したリストを見る'),
           ],
         ),
@@ -75,7 +71,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         controller: tabController,
         children: const [
           LinkSearchTab(),
-          // TitleSearchTab(),
           ViewListTab()
         ],
       ),
