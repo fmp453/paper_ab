@@ -12,7 +12,6 @@ Future<String> postData(String idString) async {
       http.Response response = await http.post(uri, body: body, headers: {'Content-Type': 'application/json'});
       
       if(200 <= response.statusCode && response.statusCode < 300){
-        debugPrint("Response OK");
         return response.body;
       } else {
         throw Exception("Failed API Request : ${response.statusCode}");
