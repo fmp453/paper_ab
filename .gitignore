@@ -54,5 +54,8 @@ app.*.map.json
 # database csv file
 database/paper_info.csv
 
+# log dir
+/api/logs/
+
 # mailmap
 mailmap
