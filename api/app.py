@@ -1,9 +1,32 @@
+import os
 import arxiv
 import pandas as pd
 
 from flask import Flask, request, jsonify
 
+from logging import DEBUG, INFO, Formatter, FileHandler, StreamHandler, getLogger
+
 app = Flask(__name__)
+
+def get_logger(verbose):
+    os.makedirs("logs", exist_ok=True)
+    logger = getLogger(__name__)
+    logger = _set_handeler(logger, StreamHandler(), False)
+    logger = _set_handeler(logger, FileHandler("logs/log.txt", encoding='utf-8'), verbose)
+    logger.setLevel(DEBUG)
+    logger.propagate = False
+    return logger
+
+def _set_handeler(logger, handler, verbose):
+    if verbose:
+        handler.setLevel(DEBUG)
+    else:
+        handler.setLevel(INFO)
+    handler.setFormatter(Formatter('%(asctime)s %(name)s:%(lineno)s %(funcName)s [%(levelname)s]: %(message)s'))
+    logger.addHandler(handler)
+    return logger
+
+logger = get_logger(True)
 
 @app.route('/api', methods=['GET', 'POST'])
 def data_with_url():
@@ -15,6 +38,7 @@ def data_with_url():
         data["id"] = "url not match"
 
     if data["id"] == "url not match":
+        logger.error(f"not correct URL : {data}")
         return data
     
     try:
@@ -22,11 +46,13 @@ def data_with_url():
             id_list=[data["id"]]
         )
     except :
+        logger.error(f"Error : {data}")
         return f"Error : {data}"
     
     try:
         paper = next(result.results())
     except:
+        logger.error(f"Error : {result}")
         return f"Error : {result}"
     
     json_res = {
@@ -91,6 +117,7 @@ def add_paper_to_csv(id, title, abstract):
 def get_paper_info():
     csv_path = "../database/paper_info.csv"
     df = pd.read_csv(csv_path, dtype={'id': 'str'})
+    logger.info("open csv file")
     json = df.to_json(orient='records')
     return jsonify(json)
 
