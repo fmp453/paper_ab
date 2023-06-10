@@ -37,3 +37,101 @@ Future<http.Response> addInfo(String id, String title, String abstract) async {
       throw Exception("予期せぬエラー : $e");
     }
 }
+
+void selectTags(BuildContext context, String paperTitle, String id){
+  final tags = [
+    'Image',
+    'NLP',
+    'Audio',
+    'Video',
+    '時系列',
+    '理論',
+    'GAN',
+    '拡散モデル',
+    '強化学習',
+    'グラフ',
+  ];
+  List<String> selectedTags = [];
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState){
+          return AlertDialog(
+            title: Text(paperTitle),
+            content: Column(
+              children : [
+                Wrap(
+                  runSpacing: 16,
+                  spacing: 16,
+                  children: tags.map((tag) {
+                    final isSelected = selectedTags.contains(tag);
+                    return InkWell(
+                      borderRadius: const BorderRadius.all(Radius.circular(32)),
+                      onTap: () async {
+                        debugPrint("tapped");
+                        if(isSelected){
+                          selectedTags.remove(tag);
+                        } else {
+                          selectedTags.add(tag);
+                        }
+                        setState(() {},);
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 150),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(Radius.circular(32)),
+                          border: Border.all(
+                            width: 2,
+                            color: Colors.lightBlue,
+                          ),
+                          color: isSelected ? Colors.lightBlue : null,
+                        ),
+                        child: Text(
+                          tag,
+                          style: TextStyle(
+                            color: isSelected ? Colors.white70 : Colors.lightBlue,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                Expanded(
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            selectedTags.clear();
+                            setState(() {},);
+                          }, 
+                          child: const Text('Clear')
+                        ),
+                        const SizedBox(width: 25,),
+                        ElevatedButton(
+                          onPressed: () {
+                            // ここでリストに登録してポップアップを閉じる
+                            // リスト登録部分のみ未実装
+                            debugPrint(selectedTags.toString());
+                            setState(() {},);
+                            Navigator.of(context).pop();
+                          }, 
+                          child: const Text("Add List"),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ]
+            )
+          );
+        }
+      );
+    }
+  );
+}
