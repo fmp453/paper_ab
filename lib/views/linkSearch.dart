@@ -101,6 +101,7 @@ class LinkSearchTabState extends State<LinkSearchTab>{
               ),
             ),
             const SizedBox(width: 25,),
+            // タグなしで保存
             SizedBox(
               height: 50,
               child: ElevatedButton(
@@ -134,9 +135,25 @@ class LinkSearchTabState extends State<LinkSearchTab>{
                 style: ElevatedButton.styleFrom(
                   backgroundColor: appBarBackgroundColor
                 ),
-                child: const Text("Add List"),
+                child: const Text("Add List without Genre Tag"),
               ),
-            )
+            ),
+            const SizedBox(width: 25,),
+            // タグ付きで保存
+            SizedBox(
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () async{
+                  // pressedでtag選択のポップアップを出す
+                  debugPrint("add list with tag button pressed.");
+                  selectTags(context, "", "");
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: appBarBackgroundColor
+                ),
+                child: const Text("Add List with Genre Tag"),
+              ),
+            ),
           ]
         ),
         const SizedBox(height: 15,),
