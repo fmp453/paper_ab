@@ -56,6 +56,7 @@ void selectTags(BuildContext context, String paperTitle, String id){
   showDialog(
     context: context,
     builder: (context) {
+      // dialogでsetStateするにはStatefulBuilderで囲む必要あり
       return StatefulBuilder(
         builder: (context, setState){
           return AlertDialog(
@@ -67,6 +68,7 @@ void selectTags(BuildContext context, String paperTitle, String id){
                   spacing: 16,
                   children: tags.map((tag) {
                     final isSelected = selectedTags.contains(tag);
+                    // 選択されたタグの色を変える
                     return InkWell(
                       borderRadius: const BorderRadius.all(Radius.circular(32)),
                       onTap: () async {
@@ -100,6 +102,7 @@ void selectTags(BuildContext context, String paperTitle, String id){
                     );
                   }).toList(),
                 ),
+                // ボタンの実装。選択のクリアと登録の2つ
                 Expanded(
                   child: Center(
                     child: Row(
