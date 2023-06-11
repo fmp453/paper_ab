@@ -60,9 +60,10 @@ void selectTags(BuildContext context, String paperTitle, String id){
       return StatefulBuilder(
         builder: (context, setState){
           return AlertDialog(
-            title: Text(paperTitle),
+            title: const Text("Select Genre", textAlign: TextAlign.center,),
             content: Column(
               children : [
+                const SizedBox(height: 30,),
                 Wrap(
                   runSpacing: 16,
                   spacing: 16,
@@ -72,7 +73,7 @@ void selectTags(BuildContext context, String paperTitle, String id){
                     return InkWell(
                       borderRadius: const BorderRadius.all(Radius.circular(32)),
                       onTap: () async {
-                        debugPrint("tapped");
+                        debugPrint("tapped $tag");
                         if(isSelected){
                           selectedTags.remove(tag);
                         } else {
@@ -102,30 +103,53 @@ void selectTags(BuildContext context, String paperTitle, String id){
                     );
                   }).toList(),
                 ),
-                // ボタンの実装。選択のクリアと登録の2つ
+                // ボタンの実装。backとクリアと登録の3つ
                 Expanded(
                   child: Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            selectedTags.clear();
-                            setState(() {},);
-                          }, 
-                          child: const Text('Clear')
+                        SizedBox(
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.black,
+                              side: const BorderSide(
+                                color: Colors.black
+                              )
+                            ),
+                            child: const Text("戻る"),
+                          ),
                         ),
-                        const SizedBox(width: 25,),
-                        ElevatedButton(
-                          onPressed: () {
-                            // ここでリストに登録してポップアップを閉じる
-                            // リスト登録部分のみ未実装
-                            debugPrint(selectedTags.toString());
-                            setState(() {},);
-                            Navigator.of(context).pop();
-                          }, 
-                          child: const Text("Add List"),
-                        )
+                        const SizedBox(width: 35,),
+                        SizedBox(
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              selectedTags.clear();
+                              setState(() {},);
+                            }, 
+                            child: const Text('選択を全てクリア')
+                          ),
+                        ),
+                        const SizedBox(width: 35,),
+                        SizedBox(
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // ここでリストに登録してポップアップを閉じる
+                              // リスト登録部分のみ未実装
+                              debugPrint(selectedTags.toString());
+                              setState(() {},);
+                              Navigator.of(context).pop();
+                            }, 
+                            child: const Text("リストに登録"),
+                          )
+                        ),
                       ],
                     ),
                   ),
