@@ -25,75 +25,6 @@ class ViewListTabState extends State<ViewListTab>{
     });
   }
 
-  void _launchURL(String url) async{
-    if (await canLaunchUrlString(url)){
-      await launchUrlString(url);
-    } else{
-      throw 'could not launch $url';
-    }
-  }
-
-  // 表の各行をクリックしたときに出てくるダイアログを管理する関数
-  // title, abstractとその論文ページをブラウザで開くボタンに翻訳ボタンと閉じるボタン
-  // 翻訳部分については未実装
-  void _showDetails(BuildContext context, String title, String abstract, String id) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          // はみ出すときにスクロールできるようにする
-          // SingleChildScrollViewが2つあって冗長では？
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Divider(thickness: 2.0), // TitleとAbstractの間に薄めの横線を表示して区切る
-                const SizedBox(height: 8),
-                Container(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.5,
-                  ),
-                  child: SingleChildScrollView(
-                    // コピペできるようにSelectableTextを使用
-                    child: SelectableText(abstract),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            Row(
-              // 要素を等間隔に配置
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children : [
-                ElevatedButton(
-                  onPressed: (){
-                    String url = "https://arxiv.org/abs/$id";
-                    _launchURL(url);
-                  }, 
-                  child: const Text("Open in Browser")
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    debugPrint("hello");
-                  }, 
-                  child: const Text("Translate")
-                ),
-                ElevatedButton(
-                  onPressed: (){
-                    Navigator.of(context).pop();
-                  }, 
-                  child: const Text('Close')
-                )
-              ]
-            )
-          ],
-        );
-      },
-    );
-  }
-
   @override
   void initState() {
     fetchPaperInfo();
@@ -135,7 +66,7 @@ class ViewListTabState extends State<ViewListTab>{
             return DataRow(
               onSelectChanged: (bool? selected){
                 if (selected!= null && selected){
-                  _showDetails(
+                  showDetails(
                     context,
                     titleString,
                     abstractString,
