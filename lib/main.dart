@@ -53,6 +53,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   }
 
   @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -60,6 +66,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         title: Text(widget.title),
         bottom: TabBar(
           controller: tabController,
+          indicatorColor: Colors.black,
           tabs: const [
             Tab(text: 'リンクまたはIDで探す'),
             Tab(text: '登録したリストを見る'),
