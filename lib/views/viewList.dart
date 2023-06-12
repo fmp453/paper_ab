@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:paper_ab/componets/viewList_api.dart';
 
 
@@ -31,7 +29,7 @@ class ViewListTabState extends State<ViewListTab>{
                 Text(l[1]),
                 const SizedBox(height: 30,),
                 SizedBox(
-                  width: 60,
+                  width: 150,
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
