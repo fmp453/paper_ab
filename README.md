@@ -24,3 +24,10 @@ python app.py
 ```bash
 nohup python app.py &
 ```
+
+## To Do
+- タグの管理 : TOXI法で実装予定 (CSV管理する予定だが状況に応じてSQLに切り替える。`make_csv.py`も変更)
+- 翻訳ボタンの中身の実装 : Google Translateにクエリを投げる？
+- リストにおいて検索機能の追加 (現状はタグをクエリとする)
+- リストのソート機能 (Additional, 何をkeyとしてソートするかは考え中。投稿日時ならその情報をデータベースに追加する必要がある)
+- タグ指定して追加するボタンの中身の実装 : これだけ`linkSearch.dart`の話
