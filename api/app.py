@@ -121,6 +121,13 @@ def get_paper_info():
     json = df.to_json(orient='records')
     return jsonify(json)
 
+@app.route('/tag_info', methods=["GET"])
+def get_paper_tags():
+    csv_path = "../database/paper_tags.csv"
+    df = pd.read_csv(csv_path, dtype={"id": "str"})
+    logger.info("OPEN TAG CSV")
+    json = df.to_json(orient='records')
+    return jsonify(json)
 
 if __name__ == "__main__":
     app.run(debug=True)
