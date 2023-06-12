@@ -10,6 +10,11 @@ Future<List<String>> getPaperInfos() async{
   var uri = Uri.parse("http://127.0.0.1:5000/paper_info");
   http.Response response = await http.get(uri);
   var resJson = response.body;
+  
+  if(response.statusCode == 403){
+    return ["403", "サーバーが起動していません"];
+  }
+
   String tmp = json.decode(resJson);
   List<String> l = tmp.split("}");
   for(int i = 0; i < l.length - 1; i++){
