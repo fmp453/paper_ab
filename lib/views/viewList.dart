@@ -16,18 +16,47 @@ class ViewListTab extends StatefulWidget{
 class ViewListTabState extends State<ViewListTab>{
   List<Map<String, dynamic>> paperInfoList = [];
 
-  Future<void> fetchPaperInfo() async {
+  Future<void> fetchPaperInfo(BuildContext context) async {
     List<String> l = await getPaperInfos();
-    setState(() {
-      for(int i = 0; i < l.length - 1; i++){
-        paperInfoList.add(json.decode(l[i]));
-      }
-    });
+    if(l[0] == "403"){
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context, 
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Error"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(l[1]),
+                const SizedBox(height: 30,),
+                SizedBox(
+                  width: 60,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("OK"),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      );
+    } else{
+      setState(() {
+        for(int i = 0; i < l.length - 1; i++){
+          paperInfoList.add(json.decode(l[i]));
+        }
+      });
+    }
   }
 
   @override
   void initState() {
-    fetchPaperInfo();
+    fetchPaperInfo(context);
     super.initState();
   }
 
