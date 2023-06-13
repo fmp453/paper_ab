@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   @override
   void initState(){
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     tabController.addListener(() {
       setState(() {
        switch (tabController.index){
@@ -47,6 +47,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           break;
         case 1:
           appBarBackgroundColor = Colors.blueAccent;
+          break;
+        case 2:
+          appBarBackgroundColor = Colors.orangeAccent;
           break;
        } 
       });
