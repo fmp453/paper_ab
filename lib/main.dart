@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:paper_ab/views/linkSearch.dart';
 import 'package:paper_ab/views/viewList.dart';
+import 'package:paper_ab/views/tagList.dart';
 
 void main() {
   runApp(const MyApp());
@@ -70,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           tabs: const [
             Tab(text: 'リンクまたはIDで探す'),
             Tab(text: '登録したリストを見る'),
+            Tab(text: 'タグでデータベースを検索'),
           ],
         ),
       ),
@@ -78,7 +80,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         controller: tabController,
         children: const [
           LinkSearchTab(),
-          ViewListTab()
+          ViewListTab(),
+          TagSearchDBTab(),
         ],
       ),
     );
