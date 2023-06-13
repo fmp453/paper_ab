@@ -113,7 +113,7 @@ def add_paper_to_csv(id, title, abstract):
     return "added into the list successfully"
 
 @app.route('/add_tags', methods=['GET', 'POST'])
-def add_paper_action():
+def add_paper_tags_action():
     data = request.json
     status = add_tags_to_csv(data['id'], data['tags'])
     return jsonify({"status" : status})
