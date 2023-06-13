@@ -5,6 +5,9 @@ URLまたは論文IDで検索してabstractやタイトルを表示する。
 ローカルのcsvファイルに登録することもできる
 
 ## Getting Started
+フロントはflutterで実装 (機能が増えたらReactでの実装にしてWebベースにするかも)
+- flutter : 3.7.10
+- Dart : 2.19.6
 
 バックエンド環境構築
 ```bash
