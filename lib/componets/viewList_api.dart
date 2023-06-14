@@ -36,7 +36,8 @@ void _launchURL(String url) async{
 // 表の各行をクリックしたときに出てくるダイアログを管理する関数
 // title, abstractとその論文ページをブラウザで開くボタンに翻訳ボタンと閉じるボタン
 // 翻訳部分については未実装
-void showDetails(BuildContext context, String title, String abstract, String id) {
+void showDetails(BuildContext context, String title, String abstract, String id, List<String> tags) {
+  String tagText = "タグなし";
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -48,6 +49,9 @@ void showDetails(BuildContext context, String title, String abstract, String id)
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const Divider(thickness: 2.0), // TitleとAbstractの間に薄めの横線を表示して区切る
+              const SizedBox(height: 8,),
+              Text(tagText),
               const Divider(thickness: 2.0), // TitleとAbstractの間に薄めの横線を表示して区切る
               const SizedBox(height: 8),
               Container(
