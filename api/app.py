@@ -119,7 +119,7 @@ def add_paper_tags_action():
     return jsonify({"status" : status})
 
 def add_tags_to_csv(id, tags):
-    csv_path = "../database/paper_tags.csv"
+    csv_path = "../database/tags_table.csv"
     df = pd.read_csv(csv_path, dtype={'id': 'str'})
 
     if id == '':
@@ -149,7 +149,7 @@ def get_paper_info():
 
 @app.route('/tag_info', methods=["GET"])
 def get_paper_tags():
-    csv_path = "../database/paper_tags.csv"
+    csv_path = "../database/tags_table.csv"
     df = pd.read_csv(csv_path, dtype={"id": "str"})
     logger.info("OPEN TAG CSV")
     json = df.to_json(orient='records')
