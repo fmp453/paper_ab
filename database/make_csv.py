@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 
-df = pd.DataFrame(columns=['id', 'title', 'abstract'])
+df = pd.DataFrame(columns=['id', 'title', 'abstract', 'tags'])
 
 if not os.path.exists('paper_info.csv'):
     df.to_csv('paper_info.csv', index=False)
