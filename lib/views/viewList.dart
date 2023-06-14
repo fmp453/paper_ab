@@ -97,7 +97,8 @@ class ViewListTabState extends State<ViewListTab>{
                     context,
                     titleString,
                     abstractString,
-                    idString
+                    idString,
+                    []
                   );
                 }
               },
