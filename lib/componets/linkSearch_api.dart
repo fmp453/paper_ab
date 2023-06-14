@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:paper_ab/utils/utils.dart';
 
 
 Future<String> postData(String idString) async {
@@ -39,18 +40,8 @@ Future<http.Response> addInfo(String id, String title, String abstract) async {
 }
 
 void selectTags(BuildContext context, String paperTitle, String id){
-  final tags = [
-    'Image',
-    'NLP',
-    'Audio',
-    'Video',
-    '時系列',
-    '理論',
-    'GAN',
-    '拡散モデル',
-    '強化学習',
-    'グラフ',
-  ];
+  final paperTags = PaperTags();
+  late final tags = paperTags.getTagList();
   List<String> selectedTags = [];
 
   showDialog(
@@ -143,6 +134,7 @@ void selectTags(BuildContext context, String paperTitle, String id){
                             onPressed: () {
                               // ここでリストに登録してポップアップを閉じる
                               // リスト登録部分のみ未実装
+                              // Timerで管理した方がいい？
                               debugPrint(selectedTags.toString());
                               setState(() {},);
                               Navigator.of(context).pop();
