@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:paper_ab/utils/utils.dart';
 
 class TagSearchDBTab extends StatefulWidget{
   const TagSearchDBTab({super.key});
@@ -9,18 +10,8 @@ class TagSearchDBTab extends StatefulWidget{
 }
 
 class TagSearchDBTabState extends State<TagSearchDBTab>{
-  final tags = [
-    'Image',
-    'NLP',
-    'Audio',
-    'Video',
-    '時系列',
-    '理論',
-    'GAN',
-    '拡散モデル',
-    '強化学習',
-    'グラフ',
-  ];
+  final paperTags = PaperTags();
+  late final tags = paperTags.getTagList();
   List<String> selectedTags = [];
   bool orSearch = false;
 
@@ -97,6 +88,7 @@ class TagSearchDBTabState extends State<TagSearchDBTab>{
                   child: ElevatedButton(
                     onPressed: () {
                       selectedTags.clear();
+                      orSearch = false;
                       setState(() {});
                     },
                     style: ElevatedButton.styleFrom(
