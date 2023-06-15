@@ -7,6 +7,7 @@ from flask import Flask, request, jsonify
 from logging import DEBUG, INFO, Formatter, FileHandler, StreamHandler, getLogger
 
 app = Flask(__name__)
+app.config["JSON_AS_ASCII"] = False
 
 def get_logger(verbose):
     os.makedirs("logs", exist_ok=True)
@@ -150,9 +151,16 @@ def get_paper_info():
 @app.route('/tag_info', methods=["GET"])
 def get_paper_tags():
     csv_path = "../database/tags_table.csv"
-    df = pd.read_csv(csv_path, dtype={"id": "str"})
+    df = pd.read_csv(csv_path, dtype={"tag_id": "str"})
     logger.info("OPEN TAG CSV")
     json = df.to_json(orient='records')
+    return jsonify(json)
+
+@app.route('/get_tags', methods=['GET'])
+def get_tag_list():
+    csv_path = "../database/tags_table.csv"
+    df = pd.read_csv(csv_path)
+    json = df["tag_name"].to_json(orient='records', force_ascii=False)
     return jsonify(json)
 
 if __name__ == "__main__":
