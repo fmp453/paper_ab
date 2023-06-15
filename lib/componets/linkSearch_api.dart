@@ -39,11 +39,23 @@ Future<http.Response> addInfo(String id, String title, String abstract) async {
     }
 }
 
-void selectTags(BuildContext context, String paperTitle, String id){
-  final paperTags = PaperTags();
-  late final tags = paperTags.getTagList();
+// タグのリストをcsvから取得
+Future<List<String>> getTags() async {
+  var uri = Uri.parse("http://127.0.0.1:5000/get_tags");
+  http.Response response = await http.get(uri);
+  var resJson = response.body;
+  String tmp = json.decode(resJson);
+  // tmpの例 : ["Image","NLP","Audio","Video","Time Series","理論","GAN","Diffusion Models","強化学習","グラフ"]
+  // 最初と最後の[]と"を取り除く必要がある。
+  List<String> l = tmp.substring(1, tmp.length - 1).replaceAll("\"", "").split(",");
+  return l;
+}
+
+void selectTags(BuildContext context, String paperTitle, String id) async{
+  List<String> tags = await getTags();
   List<String> selectedTags = [];
 
+  // ignore: use_build_context_synchronously
   showDialog(
     context: context,
     builder: (context) {
