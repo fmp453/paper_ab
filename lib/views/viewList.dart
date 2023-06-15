@@ -89,6 +89,8 @@ class ViewListTabState extends State<ViewListTab>{
             final idString = paperInfoList[index]["id"];
             final titleString = paperInfoList[index]["title"];
             final abstractString = paperInfoList[index]["abstract"];
+            final tags = paperInfoList[index]["tags"];
+            debugPrint(tags.toString());
 
             return DataRow(
               onSelectChanged: (bool? selected){
@@ -98,7 +100,7 @@ class ViewListTabState extends State<ViewListTab>{
                     titleString,
                     abstractString,
                     idString,
-                    []
+                    tags
                   );
                 }
               },
