@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:paper_ab/utils/utils.dart';
+import 'package:paper_ab/componets/tagList_api.dart';
 
 class TagSearchDBTab extends StatefulWidget{
   const TagSearchDBTab({super.key});
@@ -103,9 +104,11 @@ class TagSearchDBTabState extends State<TagSearchDBTab>{
                 SizedBox(
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       debugPrint("search");
-                      debugPrint(selectedTags.toString());
+                      var tmp = await searchPapersWithTags(selectedTags);
+                      debugPrint(tmp.toString());
+                      // 検索結果を表示する部分を実装する
                     },
                     child: const Text("探す"),
                   ),
