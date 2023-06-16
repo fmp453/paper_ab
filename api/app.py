@@ -163,5 +163,28 @@ def get_tag_list():
     json = df["tag_name"].to_json(orient='records', force_ascii=False)
     return jsonify(json)
 
+@app.route('/paper_info_tags', methods=['GET', 'POST'])
+def get_paper_info_with_tags():
+    # tags : list
+    tags = request.json
+    csv_path = "../database/paper_info.csv"
+    df = pd.read_csv(csv_path, dtype={'id': 'str'})
+    tag_columns = df["tags"].to_numpy()
+    conditioned_df = pd.DataFrame(columns=df.columns)
+
+    for i, each_tag in enumerate(tag_columns):
+        each_tag = str(each_tag).split(",")
+        for x in each_tag:
+            if x in tags:
+                extacted_paper_info = {}
+                for element in df.iloc[i].index:
+                    extacted_paper_info[element] = df.iloc[i][element]
+
+                new_row = pd.DataFrame([extacted_paper_info])
+                conditioned_df = pd.concat([conditioned_df, new_row], ignore_index=True)
+    
+    json = conditioned_df.to_json(orient='records')
+    return jsonify(json)
+
 if __name__ == "__main__":
     app.run(debug=True)
