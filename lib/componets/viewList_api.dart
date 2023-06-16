@@ -32,13 +32,42 @@ void _launchURL(String url) async{
     }
 }
 
+// 各論文につけられたタグをTitleとAbstractの間に表示する。
+// タグがない場合はshowDetails内で制御するのでタグが1つ以上あるとしてよい
+// Tag Selectと同じ見た目で表示する
+Widget splitAndMakeTagIcon(String tags){
+  List<String> tagLists = tags.split(",");
+
+  return Wrap(
+    runSpacing: 16,
+    spacing: 16,
+    children: tagLists.map((tag){
+      return InkWell(
+        borderRadius: const BorderRadius.all(Radius.circular(32)),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(32)),
+            border: Border.all(
+              width: 2,
+              color: Colors.lightBlue,
+            ),
+            color: Colors.lightBlue
+          ),
+          child: Text(tag, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        ),
+      );
+    }).toList(),
+  );
+}
+
 // 表の各行をクリックしたときに出てくるダイアログを管理する関数
 // title, abstractとその論文ページをブラウザで開くボタンに翻訳ボタンと閉じるボタン
 // 翻訳部分については未実装
 void showDetails(BuildContext context, String title, String abstract, String id, String? tags) {
-  // まずはタグの数を1つに限定する
-  String tagText = "タグなし";
+  
   // タグが複数の場合はカンマ区切りで文字列が入ってくる
+  String tagText = "タグなし";
 
   showDialog(
     context: context,
@@ -51,10 +80,10 @@ void showDetails(BuildContext context, String title, String abstract, String id,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Divider(thickness: 2.0), // TitleとAbstractの間に薄めの横線を表示して区切る
+              const Divider(thickness: 2.0), // TitleとTagの間に薄めの横線を表示して区切る
               const SizedBox(height: 8,),
-              tags == null ? Text(tagText) : Text(tags.toString()),
-              const Divider(thickness: 2.0), // TitleとAbstractの間に薄めの横線を表示して区切る
+              tags == null ? Text(tagText) : splitAndMakeTagIcon(tags),
+              const Divider(thickness: 2.0), // TagとAbstractの間に薄めの横線を表示して区切る
               const SizedBox(height: 8),
               Container(
                 constraints: BoxConstraints(
