@@ -145,9 +145,8 @@ class LinkSearchTabState extends State<LinkSearchTab>{
               child: ElevatedButton(
                 onPressed: () async{
                   // pressedでtag選択のポップアップを出す
-                  debugPrint("add list with tag button pressed.");
-                  // 適切に引数を設定する(未実装)
-                  selectTags(context, "", "");
+                  // 現在の実装では一旦abstractなどを表示させないといけないのでこれの対処法を考える
+                  selectTags(context, titleText, paperID, abstractString);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: appBarBackgroundColor
