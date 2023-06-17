@@ -45,7 +45,7 @@ Future<http.Response> addInfoWithTags(String id, String title, String abstract, 
     "id": id,
     "title": title,
     "abstract": abstract,
-    "tags": tags.toString().substring(1, tags.length - 1), // tagsの[]を取る
+    "tags": tags.toString(), 
   });
 
   try{
@@ -71,6 +71,9 @@ Future<List<String>> getTags() async {
 void selectTags(BuildContext context, String paperTitle, String id, String abstract) async{
   List<String> tags = await getTags();
   List<String> selectedTags = [];
+
+  // 引数のどれかがから文字列ならエラーを出すがこれはここでやるべきではなさそう
+  debugPrint(id);
 
   // ignore: use_build_context_synchronously
   showDialog(
@@ -162,9 +165,8 @@ void selectTags(BuildContext context, String paperTitle, String id, String abstr
                           child: ElevatedButton(
                             onPressed: () {
                               // ここでリストに登録してポップアップを閉じる
-                              // リスト登録部分のみ未実装
                               // Timerで管理した方がいい？
-                              debugPrint(selectedTags.toString());
+                              var result = addInfoWithTags(id, paperTitle, abstract, selectedTags);
                               setState(() {},);
                               Navigator.of(context).pop();
                             }, 
