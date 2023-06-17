@@ -68,7 +68,7 @@ Future<List<String>> getTags() async {
   return l;
 }
 
-void selectTags(BuildContext context, String paperTitle, String id) async{
+void selectTags(BuildContext context, String paperTitle, String id, String abstract) async{
   List<String> tags = await getTags();
   List<String> selectedTags = [];
 
