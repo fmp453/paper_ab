@@ -89,7 +89,6 @@ def add_paper_action():
     status = add_paper_to_csv(data['id'], data['title'], data['abstract'])
     return jsonify({"status" : status})
 
-
 def add_paper_to_csv(id, title, abstract):
     csv_path = "../database/paper_info.csv"
     df = pd.read_csv(csv_path, dtype={'id': 'str'})
@@ -106,11 +105,41 @@ def add_paper_to_csv(id, title, abstract):
         'abstract': abstract
     }
 
-    
     new_row = pd.DataFrame([new_paper_info])
     df = pd.concat([df, new_row], ignore_index=True)
     df.to_csv(csv_path, index=False)
 
+    return "added into the list successfully"
+
+@app.route('/add_info_with_tags', methods=['GET', 'POST'])
+def add_paper_action_with_tags():
+    data = request.json
+    status = add_paper_to_csv_tags(data['id'], data['title'], data['abstract'], data['tags'])
+    return jsonify({"status": status})
+
+def add_paper_to_csv_tags(id, title, abstract, tags : str):
+    csv_path = "../database/paper_info.csv"
+    df = pd.read_csv(csv_path, dtype={'id': 'str'})
+
+    if id == '' or title == 'URLまたはIDが間違っています' or abstract == '':
+        return "IDまたはURLが間違っている可能性があります"
+
+    if id in set(df["id"].values):
+        return "Already added in the list"
+    
+    # tagsの[]とタグ区切りのカンマの後ろの空白を消す
+    tags = tags.replace("[", "").replace("]", "").replace(", ", ",")
+
+    new_paper_info = {
+        'id': id, 
+        'title': title,
+        'abstract': abstract,
+        'tags': tags
+    }
+
+    new_row = pd.DataFrame([new_paper_info])
+    df = pd.concat([df, new_row], ignore_index=True)
+    df.to_csv(csv_path, index=False)
     return "added into the list successfully"
 
 @app.route('/add_tags', methods=['GET', 'POST'])
