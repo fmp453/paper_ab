@@ -39,6 +39,23 @@ Future<http.Response> addInfo(String id, String title, String abstract) async {
     }
 }
 
+Future<http.Response> addInfoWithTags(String id, String title, String abstract, List<String> tags) async {
+  var uri = Uri.parse("http://127.0.0.1:5000/add_info_with_tags");
+  String body = json.encode({
+    "id": id,
+    "title": title,
+    "abstract": abstract,
+    "tags": tags.toString().substring(1, tags.length - 1), // tagsの[]を取る
+  });
+
+  try{
+    http.Response response = await http.post(uri, body: body, headers: {'Content-Type': 'application/json'});
+    return response;
+  } catch(e){
+    throw Exception("Unexpected Error $e");
+  }
+}
+
 // タグのリストをcsvから取得
 Future<List<String>> getTags() async {
   var uri = Uri.parse("http://127.0.0.1:5000/get_tags");
