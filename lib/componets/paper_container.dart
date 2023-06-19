@@ -39,9 +39,38 @@ class PaperContainer extends StatelessWidget {
       ),
       child: Container(
         height: 100,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
         decoration: const BoxDecoration(
           color: Colors.redAccent,
           borderRadius: BorderRadius.all(Radius.circular(32)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              paper.id,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 15,),
+            Center(
+              child: Text(
+                paper.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
