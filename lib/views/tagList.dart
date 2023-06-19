@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:paper_ab/utils/utils.dart';
 import 'package:paper_ab/componets/tagList_api.dart';
+import 'package:paper_ab/componets/paper_container.dart';
 
 class TagSearchDBTab extends StatefulWidget{
   const TagSearchDBTab({super.key});
@@ -15,6 +16,7 @@ class TagSearchDBTabState extends State<TagSearchDBTab>{
   late final tags = paperTags.getTagList();
   List<String> selectedTags = [];
   bool orSearch = false;
+  List<PaperInfo> papers = [];
 
   @override
   Widget build(BuildContext context){
@@ -29,7 +31,6 @@ class TagSearchDBTabState extends State<TagSearchDBTab>{
             return InkWell(
               borderRadius: const BorderRadius.all(Radius.circular(32)),
               onTap: () async {
-                debugPrint("tagged $tag");
                 if(isSelected){
                   selectedTags.remove(tag);
                 } else {
@@ -59,63 +60,59 @@ class TagSearchDBTabState extends State<TagSearchDBTab>{
             );
           }).toList(),
         ),
-        const SizedBox(height: 15,),
-        // Optionalの設定
+        const SizedBox(height: 20,),
         Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("OR検索"),
-                const SizedBox(width: 18,),
-                CupertinoSwitch(
-                  activeColor: Colors.greenAccent,
-                  value: orSearch,
-                  onChanged: (value) {
-                    orSearch = value;
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("OR検索"),
+              const SizedBox(width: 18,),
+              CupertinoSwitch(
+                activeColor: Colors.greenAccent,
+                value: orSearch,
+                onChanged: (value) {
+                  orSearch = value;
+                  setState(() {});
+                },
+              ),
+              const SizedBox(width: 30,),
+              SizedBox(
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    selectedTags.clear();
+                    orSearch = false;
                     setState(() {});
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    side: const BorderSide(color: Colors.black)
+                  ),
+                  child: const Text("選択をクリア"),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 30,),
+              SizedBox(
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // 検索してその結果を表示
+                    // 検索結果をクリックした時の処理を追加
+                    var tmp = await getPaperInfo(selectedTags);
+                    setState(() => papers = tmp);
+                  },
+                  child: const Text("探す"),
+                ),
+              ),
+            ],
+          ),
         ),
-        // ボタンの実装
+        const SizedBox(height: 20,),
         Expanded(
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      selectedTags.clear();
-                      orSearch = false;
-                      setState(() {});
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      side: const BorderSide(color: Colors.black)
-                    ),
-                    child: const Text("選択をクリア"),
-                  ),
-                ),
-                const SizedBox(width: 30,),
-                SizedBox(
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      debugPrint("search");
-                      var tmp = await searchPapersWithTags(selectedTags);
-                      debugPrint(tmp.toString());
-                      // 検索結果を表示する部分を実装する
-                    },
-                    child: const Text("探す"),
-                  ),
-                ),
-              ],
-            ),
-          )
+          child: ListView(
+            children: papers.map((paper) => PaperContainer(paper: paper)).toList(),
+          ),
         ),
       ]
     );
