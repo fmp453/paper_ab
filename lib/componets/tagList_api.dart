@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-
+import 'package:paper_ab/componets/paper_container.dart';
 
 Future<List<String>> searchPapersWithTags(List<String> tagsList) async {
   var uri = Uri.parse("http://127.0.0.1:5000/paper_info_tags"); 
@@ -28,5 +28,38 @@ Future<List<String>> searchPapersWithTags(List<String> tagsList) async {
     l[i] = l[i].replaceAll(r"\n", " ");
   }
 
+  l.removeRange(l.length - 1, l.length);
+  return l;
+}
+
+Future<List<PaperInfo>> getPaperInfo(List<String> tagsList) async{
+  List<String> l = await searchPapersWithTags(tagsList);
+  List<PaperInfo> res = [];
+  List<Map<String, dynamic>> p = [];
+  for(int i = 0; i < l.length; i++){
+    p.add(json.decode(l[i]));
+  }
+  for(int i = 0; i < p.length; i++){
+    List<String> tags = p[i]["tags"].split(",");
+    PaperInfo tmp = PaperInfo(
+      title: p[i]["title"],
+      id: p[i]["id"], 
+      abstractString: p[i]["abstract"],
+      tags: tags
+    );
+    res.add(tmp);
+  }
+  return res;
+}
+
+// タグのリストをcsvから取得
+Future<List<String>> getTags() async {
+  var uri = Uri.parse("http://127.0.0.1:5000/get_tags");
+  http.Response response = await http.get(uri);
+  var resJson = response.body;
+  String tmp = json.decode(resJson);
+  // tmpの例 : ["Image","NLP","Audio","Video","Time Series","理論","GAN","Diffusion Models","強化学習","グラフ"]
+  // 最初と最後の[]と"を取り除く必要がある。
+  List<String> l = tmp.substring(1, tmp.length - 1).replaceAll("\"", "").split(",");
   return l;
 }
