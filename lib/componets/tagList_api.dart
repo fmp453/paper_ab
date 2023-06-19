@@ -36,10 +36,14 @@ Future<List<PaperInfo>> getPaperInfo(List<String> tagsList) async{
   List<String> l = await searchPapersWithTags(tagsList);
   List<PaperInfo> res = [];
   List<Map<String, dynamic>> p = [];
+  Set<String> s = {};
   for(int i = 0; i < l.length; i++){
     p.add(json.decode(l[i]));
   }
   for(int i = 0; i < p.length; i++){
+    if(s.contains(p[i]["id"])){
+      continue;
+    }
     List<String> tags = p[i]["tags"].split(",");
     PaperInfo tmp = PaperInfo(
       title: p[i]["title"],
@@ -48,6 +52,7 @@ Future<List<PaperInfo>> getPaperInfo(List<String> tagsList) async{
       tags: tags
     );
     res.add(tmp);
+    s.add(p[i]["id"]);
   }
   return res;
 }
