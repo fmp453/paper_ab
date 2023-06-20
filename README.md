@@ -31,6 +31,3 @@ nohup python app.py &
 ## To Do
 - 翻訳ボタンの中身の実装 : Google Translateにクエリを投げる？
 - リストのソート機能 (Additional, 何をkeyとしてソートするかは考え中。投稿日時ならその情報をデータベースに追加する必要がある)
-- `app.py`にType Hintsをつける
-- 現在の実装ではリストに登録する時に一旦View Abstractを挟まないといけないので、それなしでも登録できるようにする
-- OR検索が機能しているかのチェックと実装
