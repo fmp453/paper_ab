@@ -49,6 +49,30 @@ class LinkSearchTabState extends State<LinkSearchTab>{
     return Column(
       children: [
         const SizedBox(height: 20,),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            SizedBox(
+              height: 15,
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    paperID = "";
+                    titleText = "";
+                    abstractString = "";
+                    abstractChapter = "";
+                    showDivider = false;
+                    _userPaperLinkField.text = "";
+                  });
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.lightBlue),
+                child: const Text("Clear", style: TextStyle(fontSize: 11),),
+              ),
+            ),
+            const SizedBox(width: 20,)
+          ],
+        ),
+        const SizedBox(height: 20,),
         Row (
             children:[
               const SizedBox(width: 15,),
@@ -146,6 +170,22 @@ class LinkSearchTabState extends State<LinkSearchTab>{
                 onPressed: () async{
                   // pressedでtag選択のポップアップを出す
                   // 現在の実装では一旦abstractなどを表示させないといけないのでこれの対処法を考える
+                  // view abstractを押した時の処理を挟む
+                  if(titleText == "" || paperID == "" || abstractString == ""){
+                    String resJson = await postData(_userPaperLinkField.text);
+                    Map<String, dynamic> paperInfo = json.decode(resJson);
+                    if(paperInfo["id"] == "url not match"){
+                      setState(() {
+                        titleText = worngMessage;
+                      });
+                      return ;
+                    } else{
+                      setState(() {
+                        displayPaperInfo(paperInfo);
+                      });
+                    }
+                  }
+                  // ignore: use_build_context_synchronously
                   selectTags(context, titleText, paperID, abstractString);
                 },
                 style: ElevatedButton.styleFrom(
