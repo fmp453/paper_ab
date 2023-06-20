@@ -201,17 +201,42 @@ def get_paper_info_with_tags():
     tag_columns = df["tags"].to_numpy()
     conditioned_df = pd.DataFrame(columns=df.columns)
 
-    for i, each_tag in enumerate(tag_columns):
-        each_tag = str(each_tag).split(",")
-        for x in each_tag:
-            if x in tags:
-                extacted_paper_info = {}
-                for element in df.iloc[i].index:
-                    extacted_paper_info[element] = df.iloc[i][element]
-
-                new_row = pd.DataFrame([extacted_paper_info])
-                conditioned_df = pd.concat([conditioned_df, new_row], ignore_index=True)
+    tags = set(tags)
+    andSearch = "AND" in tags
     
+    if andSearch:
+        tags.remove("AND")
+
+    # csvから条件タグに一致するものを選択する。ORとANDのときで変える必要あり
+    for i, each_tag in enumerate(tag_columns):
+        # 各論文につけられたタグ
+        each_tag = str(each_tag).split(",")
+        # OR検索
+        if not andSearch:
+            for x in each_tag:
+                if x in tags:
+                    extracted_paper_info = {}
+                    for element in df.iloc[i].index:
+                        extracted_paper_info[element] = df.iloc[i][element]
+
+                    new_row = pd.DataFrame([extracted_paper_info])
+                    conditioned_df = pd.concat([conditioned_df, new_row], ignore_index=True)
+        
+        # AND検索
+        else:
+            each_tag_set = set(each_tag)
+            ok = True
+            for x in tags:
+                if x not in each_tag_set:
+                    ok = False
+                    break
+            if ok:
+                extracted_paper_info = {}
+                for element in df.iloc[i].index:
+                    extracted_paper_info[element] = df.iloc[i][element]
+                new_row = pd.DataFrame([extracted_paper_info])
+                conditioned_df = pd.concat([conditioned_df, new_row], ignore_index=True)
+
     json = conditioned_df.to_json(orient='records')
     return jsonify(json)
 
