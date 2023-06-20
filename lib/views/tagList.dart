@@ -15,7 +15,7 @@ class TagSearchDBTabState extends State<TagSearchDBTab>{
   final paperTags = PaperTags();
   late final tags = paperTags.getTagList();
   List<String> selectedTags = [];
-  bool orSearch = false;
+  bool andSearch = false;
   List<PaperInfo> papers = [];
 
   @override
@@ -65,13 +65,13 @@ class TagSearchDBTabState extends State<TagSearchDBTab>{
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("OR検索"),
+              const Text("AND検索"),
               const SizedBox(width: 18,),
               CupertinoSwitch(
                 activeColor: Colors.greenAccent,
-                value: orSearch,
+                value: andSearch,
                 onChanged: (value) {
-                  orSearch = value;
+                  andSearch = value;
                   setState(() {});
                 },
               ),
@@ -81,7 +81,7 @@ class TagSearchDBTabState extends State<TagSearchDBTab>{
                 child: ElevatedButton(
                   onPressed: () {
                     selectedTags.clear();
-                    orSearch = false;
+                    andSearch = false;
                     setState(() {});
                   },
                   style: ElevatedButton.styleFrom(
@@ -98,8 +98,7 @@ class TagSearchDBTabState extends State<TagSearchDBTab>{
                 child: ElevatedButton(
                   onPressed: () async {
                     // 検索してその結果を表示
-                    // 検索結果をクリックした時の処理を追加
-                    var tmp = await getPaperInfo(selectedTags);
+                    var tmp = await getPaperInfo(selectedTags, andSearch);
                     setState(() => papers = tmp);
                   },
                   child: const Text("探す"),
