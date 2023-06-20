@@ -5,6 +5,7 @@ import pandas as pd
 from flask import Flask, request, jsonify
 
 from logging import DEBUG, INFO, Formatter, FileHandler, StreamHandler, getLogger
+from typing import List, Dict
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
@@ -31,7 +32,7 @@ logger = get_logger(True)
 
 @app.route('/api', methods=['GET', 'POST'])
 def data_with_url():
-    data = request.json
+    data: Dict = request.json
     
     if check_url(data["id"]):
         data = extract_id_from_url(data["id"])
@@ -56,14 +57,14 @@ def data_with_url():
         logger.error(f"Error : {result}")
         return f"Error : {result}"
     
-    json_res = {
+    json_res: Dict = {
         "id": data["id"],
         "title": paper.title,
         "abstract": paper.summary
     }
     return jsonify(json_res)
 
-def extract_id_from_url(url):
+def extract_id_from_url(url: str) -> Dict:
     """
         assumed input cases
         case1 : https://arxiv.org/abs/1706.03762 => 1706.03762
@@ -80,17 +81,17 @@ def extract_id_from_url(url):
     
     return {"id" : "url not match"}
 
-def check_url(url):
+def check_url(url) -> bool:
     return "https" in url
 
 @app.route('/add_info', methods=['GET', 'POST'])
 def add_paper_action():
-    data = request.json
+    data: Dict = request.json
     status = add_paper_to_csv(data['id'], data['title'], data['abstract'])
     return jsonify({"status" : status})
 
-def add_paper_to_csv(id, title, abstract):
-    csv_path = "../database/paper_info.csv"
+def add_paper_to_csv(id: str, title: str, abstract: str) -> str:
+    csv_path: str = "../database/paper_info.csv"
     df = pd.read_csv(csv_path, dtype={'id': 'str'})
 
     if id == '' or title == 'URLまたはIDが間違っています' or abstract == '':
@@ -99,7 +100,7 @@ def add_paper_to_csv(id, title, abstract):
     if id in set(df["id"].values):
         return "Already added in the list"
     
-    new_paper_info = {
+    new_paper_info: Dict = {
         'id': id, 
         'title': title,
         'abstract': abstract
@@ -113,11 +114,11 @@ def add_paper_to_csv(id, title, abstract):
 
 @app.route('/add_info_with_tags', methods=['GET', 'POST'])
 def add_paper_action_with_tags():
-    data = request.json
+    data: Dict = request.json
     status = add_paper_to_csv_tags(data['id'], data['title'], data['abstract'], data['tags'])
     return jsonify({"status": status})
 
-def add_paper_to_csv_tags(id, title, abstract, tags : str):
+def add_paper_to_csv_tags(id: str, title: str, abstract: str, tags: str) -> str:
     csv_path = "../database/paper_info.csv"
     df = pd.read_csv(csv_path, dtype={'id': 'str'})
 
@@ -130,7 +131,7 @@ def add_paper_to_csv_tags(id, title, abstract, tags : str):
     # tagsの[]とタグ区切りのカンマの後ろの空白を消す
     tags = tags.replace("[", "").replace("]", "").replace(", ", ",")
 
-    new_paper_info = {
+    new_paper_info: Dict = {
         'id': id, 
         'title': title,
         'abstract': abstract,
@@ -144,12 +145,12 @@ def add_paper_to_csv_tags(id, title, abstract, tags : str):
 
 @app.route('/add_tags', methods=['GET', 'POST'])
 def add_paper_tags_action():
-    data = request.json
+    data: Dict = request.json
     status = add_tags_to_csv(data['id'], data['tags'])
     return jsonify({"status" : status})
 
-def add_tags_to_csv(id, tags):
-    csv_path = "../database/tags_table.csv"
+def add_tags_to_csv(id: str, tags: str) -> str:
+    csv_path: str = "../database/tags_table.csv"
     df = pd.read_csv(csv_path, dtype={'id': 'str'})
 
     if id == '':
@@ -171,7 +172,7 @@ def add_tags_to_csv(id, tags):
 
 @app.route('/paper_info', methods=['GET'])
 def get_paper_info():
-    csv_path = "../database/paper_info.csv"
+    csv_path: str = "../database/paper_info.csv"
     df = pd.read_csv(csv_path, dtype={'id': 'str'})
     logger.info("open csv file")
     json = df.to_json(orient='records')
@@ -179,7 +180,7 @@ def get_paper_info():
 
 @app.route('/tag_info', methods=["GET"])
 def get_paper_tags():
-    csv_path = "../database/tags_table.csv"
+    csv_path: str = "../database/tags_table.csv"
     df = pd.read_csv(csv_path, dtype={"tag_id": "str"})
     logger.info("OPEN TAG CSV")
     json = df.to_json(orient='records')
@@ -187,22 +188,21 @@ def get_paper_tags():
 
 @app.route('/get_tags', methods=['GET'])
 def get_tag_list():
-    csv_path = "../database/tags_table.csv"
+    csv_path: str = "../database/tags_table.csv"
     df = pd.read_csv(csv_path)
     json = df["tag_name"].to_json(orient='records', force_ascii=False)
     return jsonify(json)
 
 @app.route('/paper_info_tags', methods=['GET', 'POST'])
 def get_paper_info_with_tags():
-    # tags : list
-    tags = request.json
-    csv_path = "../database/paper_info.csv"
+    tags: List = request.json
+    csv_path: str = "../database/paper_info.csv"
     df = pd.read_csv(csv_path, dtype={'id': 'str'})
     tag_columns = df["tags"].to_numpy()
     conditioned_df = pd.DataFrame(columns=df.columns)
 
     tags = set(tags)
-    andSearch = "AND" in tags
+    andSearch: bool = "AND" in tags
     
     if andSearch:
         tags.remove("AND")
@@ -215,7 +215,7 @@ def get_paper_info_with_tags():
         if not andSearch:
             for x in each_tag:
                 if x in tags:
-                    extracted_paper_info = {}
+                    extracted_paper_info: Dict = {}
                     for element in df.iloc[i].index:
                         extracted_paper_info[element] = df.iloc[i][element]
 
@@ -224,14 +224,14 @@ def get_paper_info_with_tags():
         
         # AND検索
         else:
-            each_tag_set = set(each_tag)
+            each_tag = set(each_tag)
             ok = True
             for x in tags:
-                if x not in each_tag_set:
+                if x not in each_tag:
                     ok = False
                     break
             if ok:
-                extracted_paper_info = {}
+                extracted_paper_info: Dict = {}
                 for element in df.iloc[i].index:
                     extracted_paper_info[element] = df.iloc[i][element]
                 new_row = pd.DataFrame([extracted_paper_info])
