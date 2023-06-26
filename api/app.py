@@ -143,6 +143,28 @@ def add_paper_to_csv_tags(id: str, title: str, abstract: str, tags: str) -> str:
     df.to_csv(csv_path, index=False)
     return "added into the list successfully"
 
+@app.route('/add_tags_to_paper_list', methods=['GET', 'POST'])
+def add_tags_to_paper_list():
+    data: Dict = request.json
+    status = add_tags_to_paper_info(data['id'], data['tags'])
+    return jsonify({"status" : status})
+
+def add_tags_to_paper_info(id: str, tags: str) -> str:
+    csv_path: str = "../database/paper_info.csv"
+    df = pd.read_csv(csv_path, dtype={'id': 'str'})
+
+    if id == '':
+        return "IDまたはURLが間違っている可能性があります"
+
+    if id in set(df["id"].values):
+        return "paper not found"
+    
+    df.loc[df["id"] == id, "tags"] = tags
+    df.to_csv(csv_path, index=False)
+
+    return "added into the list successfully"
+
+
 @app.route('/add_tags', methods=['GET', 'POST'])
 def add_paper_tags_action():
     data: Dict = request.json
