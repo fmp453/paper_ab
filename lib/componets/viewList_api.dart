@@ -61,13 +61,27 @@ Widget splitAndMakeTagIcon(String tags){
   );
 }
 
+Widget makeRegisterTagsButton(BuildContext context, String paperTitle, String id, String abstract){
+  return ElevatedButton(
+    onPressed: () {
+      selectTags(
+        context,
+        paperTitle,
+        id,
+        abstract
+      );
+    },
+    child: const Text("タグを登録する")
+  );
+}
+
 // 表の各行をクリックしたときに出てくるダイアログを管理する関数
 // title, abstractとその論文ページをブラウザで開くボタンに翻訳ボタンと閉じるボタン
 // 翻訳部分については未実装
 void showDetails(BuildContext context, String title, String abstract, String id, String? tags) {
   
   // タグが複数の場合はカンマ区切りで文字列が入ってくる
-  String tagText = "タグなし";
+  // タグなしの場合は登録ボタンを表示する
 
   showDialog(
     context: context,
@@ -82,7 +96,8 @@ void showDetails(BuildContext context, String title, String abstract, String id,
             children: [
               const Divider(thickness: 2.0), // TitleとTagの間に薄めの横線を表示して区切る
               const SizedBox(height: 8,),
-              tags == null ? Text(tagText) : splitAndMakeTagIcon(tags),
+              // tags == null ? Text(tagText) : splitAndMakeTagIcon(tags),
+              tags == null ? makeRegisterTagsButton(context, title, id, abstract) : splitAndMakeTagIcon(tags),
               const Divider(thickness: 2.0), // TagとAbstractの間に薄めの横線を表示して区切る
               const SizedBox(height: 8),
               Container(
@@ -133,5 +148,152 @@ void showDetails(BuildContext context, String title, String abstract, String id,
         ],
       );
     },
+  );
+}
+
+Future<http.Response> addInfoWithTags(String id, String title, String abstract, List<String> tags) async {
+  var uri = Uri.parse("http://127.0.0.1:5000/add_info_with_tags");
+  String body = json.encode({
+    "id": id,
+    "title": title,
+    "abstract": abstract,
+    "tags": tags.toString(), 
+  });
+
+  try{
+    http.Response response = await http.post(uri, body: body, headers: {'Content-Type': 'application/json'});
+    return response;
+  } catch(e){
+    throw Exception("Unexpected Error $e");
+  }
+}
+
+// タグのリストをcsvから取得
+Future<List<String>> getTags() async {
+  var uri = Uri.parse("http://127.0.0.1:5000/get_tags");
+  http.Response response = await http.get(uri);
+  var resJson = response.body;
+  String tmp = json.decode(resJson);
+  // tmpの例 : ["Image","NLP","Audio","Video","Time Series","理論","GAN","Diffusion Models","強化学習","グラフ"]
+  // 最初と最後の[]と"を取り除く必要がある。
+  List<String> l = tmp.substring(1, tmp.length - 1).replaceAll("\"", "").split(",");
+  return l;
+}
+
+void selectTags(BuildContext context, String paperTitle, String id, String abstract) async{
+  List<String> tags = await getTags();
+  List<String> selectedTags = [];
+
+  // 引数のどれかがから文字列ならエラーを出すがこれはここでやるべきではなさそう
+  debugPrint(id);
+
+  // ignore: use_build_context_synchronously
+  showDialog(
+    context: context,
+    builder: (context) {
+      // dialogでsetStateするにはStatefulBuilderで囲む必要あり
+      return StatefulBuilder(
+        builder: (context, setState){
+          return AlertDialog(
+            title: const Text("Select Genre", textAlign: TextAlign.center,),
+            content: Column(
+              children : [
+                Text(paperTitle, textAlign: TextAlign.center,),
+                const SizedBox(height: 30,),
+                Wrap(
+                  runSpacing: 16,
+                  spacing: 16,
+                  children: tags.map((tag) {
+                    final isSelected = selectedTags.contains(tag);
+                    // 選択されたタグの色を変える
+                    return InkWell(
+                      borderRadius: const BorderRadius.all(Radius.circular(32)),
+                      onTap: () async {
+                        if(isSelected){
+                          selectedTags.remove(tag);
+                        } else {
+                          selectedTags.add(tag);
+                        }
+                        setState(() {},);
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 150),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(Radius.circular(32)),
+                          border: Border.all(
+                            width: 2,
+                            color: Colors.lightBlue,
+                          ),
+                          color: isSelected ? Colors.lightBlue : null,
+                        ),
+                        child: Text(
+                          tag,
+                          style: TextStyle(
+                            color: isSelected ? Colors.white70 : Colors.lightBlue,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                // ボタンの実装。backとクリアと登録の3つ
+                Expanded(
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.black,
+                              side: const BorderSide(
+                                color: Colors.black
+                              )
+                            ),
+                            child: const Text("戻る"),
+                          ),
+                        ),
+                        const SizedBox(width: 35,),
+                        SizedBox(
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              selectedTags.clear();
+                              setState(() {},);
+                            }, 
+                            child: const Text('選択を全てクリア')
+                          ),
+                        ),
+                        const SizedBox(width: 35,),
+                        SizedBox(
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // ここでリストに登録してポップアップを閉じる
+                              // Timerで管理した方がいい？
+                              var result = addInfoWithTags(id, paperTitle, abstract, selectedTags);
+                              setState(() {},);
+                              Navigator.of(context).pop();
+                            }, 
+                            child: const Text("リストに登録"),
+                          )
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ]
+            )
+          );
+        }
+      );
+    }
   );
 }
