@@ -153,10 +153,13 @@ def add_tags_to_paper_info(id: str, tags: str) -> str:
     csv_path: str = "../database/paper_info.csv"
     df = pd.read_csv(csv_path, dtype={'id': 'str'})
 
+    # tagsの[]を取る
+    tags = tags.replace("[", "").replace("]", "")
+
     if id == '':
         return "IDまたはURLが間違っている可能性があります"
 
-    if id in set(df["id"].values):
+    if id not in set(df["id"].values):
         return "paper not found"
     
     df.loc[df["id"] == id, "tags"] = tags
