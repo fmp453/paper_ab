@@ -152,7 +152,7 @@ void showDetails(BuildContext context, String title, String abstract, String id,
 }
 
 Future<http.Response> addInfoWithTags(String id, String title, String abstract, List<String> tags) async {
-  var uri = Uri.parse("http://127.0.0.1:5000/add_info_with_tags");
+  var uri = Uri.parse("http://127.0.0.1:5000/add_tags_to_paper_list");
   String body = json.encode({
     "id": id,
     "title": title,
