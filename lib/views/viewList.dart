@@ -60,69 +60,77 @@ class ViewListTabState extends State<ViewListTab>{
 
   @override
   Widget build(BuildContext context){
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: DataTable(
-        showCheckboxColumn: false,
-        columns: [
-          // コラムを中央揃えにする
-          DataColumn(
-            label: Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: const Text('Title'),
+    return Column(
+      children:[
+        const SizedBox(height: 15,),
+        // ソートの条件指定部分
+        const Text("Sorted by registered order"),
+        // 表の部分
+        SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: DataTable(
+            showCheckboxColumn: false,
+            columns: [
+              // コラムを中央揃えにする
+              DataColumn(
+                label: Expanded(
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: const Text('Title'),
+                  ),
+                ),
               ),
-            ),
-          ),
-          DataColumn(
-            label: Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: const Text('Abstract'),
+              DataColumn(
+                label: Expanded(
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: const Text('Abstract'),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
-        rows: List<DataRow>.generate(
-          paperInfoList.length, 
-          (index) {
-            final idString = paperInfoList[index]["id"];
-            final titleString = paperInfoList[index]["title"];
-            final abstractString = paperInfoList[index]["abstract"];
-            final tags = paperInfoList[index]["tags"];
+            ],
+            rows: List<DataRow>.generate(
+              paperInfoList.length, 
+              (index) {
+                final idString = paperInfoList[index]["id"];
+                final titleString = paperInfoList[index]["title"];
+                final abstractString = paperInfoList[index]["abstract"];
+                final tags = paperInfoList[index]["tags"];
 
-            return DataRow(
-              onSelectChanged: (bool? selected){
-                if (selected!= null && selected){
-                  showDetails(
-                    context,
-                    titleString,
-                    abstractString,
-                    idString,
-                    tags
-                  );
-                }
-              },
-              cells: [
-                DataCell(
-                  Text(
-                    titleString,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                ),
-                DataCell(
-                  Text(
-                    abstractString,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                ),
-              ]
-            );
-          }
-        )
-      )
+                return DataRow(
+                  onSelectChanged: (bool? selected){
+                    if (selected!= null && selected){
+                      showDetails(
+                        context,
+                        titleString,
+                        abstractString,
+                        idString,
+                        tags
+                      );
+                    }
+                  },
+                  cells: [
+                    DataCell(
+                      Text(
+                        titleString,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    ),
+                    DataCell(
+                      Text(
+                        abstractString,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    ),
+                  ]
+                );
+              }
+            )
+          )
+        ),
+      ]
     );
   }
 }
