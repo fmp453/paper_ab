@@ -71,7 +71,14 @@ Widget makeRegisterTagsButton(BuildContext context, String paperTitle, String id
         abstract
       );
     },
-    child: const Text("タグを登録する")
+    style: ElevatedButton.styleFrom(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(32))
+      ),
+      backgroundColor: Colors.lightBlue,
+      foregroundColor: Colors.white
+    ),
+    child: const Text("タグを登録する"),
   );
 }
 
@@ -96,7 +103,6 @@ void showDetails(BuildContext context, String title, String abstract, String id,
             children: [
               const Divider(thickness: 2.0), // TitleとTagの間に薄めの横線を表示して区切る
               const SizedBox(height: 8,),
-              // tags == null ? Text(tagText) : splitAndMakeTagIcon(tags),
               tags == null ? makeRegisterTagsButton(context, title, id, abstract) : splitAndMakeTagIcon(tags),
               const Divider(thickness: 2.0), // TagとAbstractの間に薄めの横線を表示して区切る
               const SizedBox(height: 8),
@@ -131,7 +137,7 @@ void showDetails(BuildContext context, String title, String abstract, String id,
                 child: const Text("Abstractを翻訳する")
               ),
               ElevatedButton(
-                onPressed: (){
+                onPressed: () async{
                   Navigator.of(context).pop();
                 }, 
                 style: ElevatedButton.styleFrom(
@@ -183,9 +189,6 @@ Future<List<String>> getTags() async {
 void selectTags(BuildContext context, String paperTitle, String id, String abstract) async{
   List<String> tags = await getTags();
   List<String> selectedTags = [];
-
-  // 引数のどれかがから文字列ならエラーを出すがこれはここでやるべきではなさそう
-  debugPrint(id);
 
   // ignore: use_build_context_synchronously
   showDialog(
