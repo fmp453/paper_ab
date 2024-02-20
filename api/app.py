@@ -10,6 +10,7 @@ from typing import List, Dict
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 
+
 def get_logger(verbose):
     os.makedirs("logs", exist_ok=True)
     logger = getLogger(__name__)
@@ -33,6 +34,7 @@ logger = get_logger(True)
 @app.route('/api', methods=['GET', 'POST'])
 def data_with_url():
     data: Dict = request.json
+    client = arxiv.Client()
     
     if check_url(data["id"]):
         data = extract_id_from_url(data["id"])
@@ -44,7 +46,7 @@ def data_with_url():
         return data
     
     try:
-        result = arxiv.Search(
+        search = arxiv.Search(
             id_list=[data["id"]]
         )
     except :
@@ -52,10 +54,10 @@ def data_with_url():
         return f"Error : {data}"
     
     try:
-        paper = next(result.results())
+        paper = next(client.results(search))
     except:
-        logger.error(f"Error : {result}")
-        return f"Error : {result}"
+        logger.error(f"Error : {search}")
+        return f"Error : {search}"
     
     json_res: Dict = {
         "id": data["id"],
