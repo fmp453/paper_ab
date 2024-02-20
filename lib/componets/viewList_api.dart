@@ -37,6 +37,7 @@ void _launchURL(String url) async{
 // Tag Selectと同じ見た目で表示する
 Widget splitAndMakeTagIcon(String tags){
   List<String> tagLists = tags.split(",");
+  debugPrint(tagLists[0]);
 
   return Wrap(
     runSpacing: 16,
@@ -79,6 +80,33 @@ Widget makeRegisterTagsButton(BuildContext context, String paperTitle, String id
       foregroundColor: Colors.white
     ),
     child: const Text("タグを登録する"),
+  );
+}
+
+// 翻訳ボタンを押したら内容を表示する
+// ダイアログにしてるけど元々のtext fieldの値を変更する方がいいかも
+void showTranslatedTextDialog(BuildContext context, String abstract){
+  showDialog(
+    context: context, 
+    builder: (BuildContext context) {
+      return  AlertDialog(
+        title: const Text("Abstract 日本語訳"),
+        content: const Text("未実装です！"),
+        actions: [
+          ElevatedButton(
+            onPressed: () async{
+              Navigator.of(context).pop();
+            }, 
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              side: const BorderSide(color: Colors.black)
+            ),
+            child: const Text('閉じる')
+          )
+        ]
+      );
+    }
   );
 }
 
@@ -132,9 +160,10 @@ void showDetails(BuildContext context, String title, String abstract, String id,
               ),
               ElevatedButton(
                 onPressed: () {
-                  debugPrint("hello");
+                  // debugPrint("hello");
+                  showTranslatedTextDialog(context, abstract);
                 }, 
-                child: const Text("Abstractを翻訳する")
+                child: const Text("英 → 日 (未実装)")
               ),
               ElevatedButton(
                 onPressed: () async{
