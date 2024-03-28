@@ -3,6 +3,7 @@ import arxiv
 import pandas as pd
 
 from flask import Flask, request, jsonify
+from openai import OpenAI
 
 from logging import DEBUG, INFO, Formatter, FileHandler, StreamHandler, getLogger
 from typing import List, Dict
@@ -266,6 +267,35 @@ def get_paper_info_with_tags():
 
     json = conditioned_df.to_json(orient='records')
     return jsonify(json)
+
+
+@app.route('/translate_abstract', method=["GET", "POST"])
+def translate_abstract_api():
+    data: Dict = request.json
+    translated_abstract = translate_abstract(data["abstract"])
+    
+    return jsonify({"translated_abstract": translated_abstract})
+    
+def translate_abstract(abstract_sentences: str) -> str:
+    # OpenAI APIを用いてabstractを翻訳する
+    # トークン数節約のため英語で指示を出す
+    # refer1 : https://platform.openai.com/docs/guides/text-generation/chat-completions-api
+    # refer2 : https://platform.openai.com/docs/guides/text-generation/chat-completions-vs-completions
+    instruction_sentence = f"""
+    Please translate given abstract of the paper written in English into Japanse.
+
+    ## input
+    {abstract_sentences}
+    """
+    model_id = "gpt-3.5-turbo"
+    input_message = [{"role": "user", "content": instruction_sentence}]
+    
+    client = OpenAI()
+    response = client.chat.completions.create(
+        model=model_id,
+        messages=input_message
+    )
+    return response.choices[0].message.content
 
 if __name__ == "__main__":
     app.run(debug=True)
