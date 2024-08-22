@@ -287,7 +287,7 @@ def translate_abstract(abstract_sentences: str) -> str:
     ## input
     {abstract_sentences}
     """
-    model_id = "gpt-3.5-turbo"
+    model_id = "gpt-4o-mini"
     input_message = [{"role": "user", "content": instruction_sentence}]
     
     client = OpenAI()
