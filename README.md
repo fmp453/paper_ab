@@ -29,5 +29,5 @@ nohup python app.py &
 ```
 
 ## To Do
-- 翻訳ボタンの中身の実装 : Google Translateにクエリを投げる？
+- 翻訳ボタンの中身の実装 : OpenAI APIでGPTに翻訳させる。
 - リストのソート機能 (Additional, 何をkeyとしてソートするかは考え中。投稿日時ならその情報をデータベースに追加する必要がある)
